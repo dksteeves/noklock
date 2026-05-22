@@ -1,0 +1,14 @@
+# This repo is docs-only — no source, no secrets. Belt-and-suspenders ignores
+# so nothing sensitive can ever be committed by accident.
+.env
+.env.*
+*.key
+*.pem
+*.keystore
+keystores/
+secrets/
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+*.log
