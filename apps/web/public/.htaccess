@@ -1,0 +1,161 @@
+# @version 0.6.0 @date 2026-06-11
+# 0.6.0 — Daniel 2026-06-11 wallet rebuild (WALLET-REBUILD-EXEC-2026-06-11):
+#         index.html + sw.js + manifest never cached (no-cache/must-revalidate
+#         + Expires text/html 0s). Stops the mixed old/new build sessions —
+#         a cached shell was resurrecting an entire OLD build from
+#         still-on-server hashed chunks. Hashed /assets/* keep the 1y cache.
+# @version 0.5.0 @date 2026-05-20
+# 0.5.0 — Daniel 2026-05-20: EU AI Act / DSM Article 4 / §44b UrhG opt-out
+#         signals. Adds TDMRep HTTP response headers (tdm-reservation: 1 +
+#         tdm-policy: /ai.txt) on every response. Also adds X-Robots-Tag
+#         "noai, noimageai, noml" as the AI-bot opt-out signal (the meta-tag
+#         equivalent in HTTP header form, so it applies even to non-HTML
+#         responses + cases where the bot fetches only the header). These
+#         signals are legally weighted under EU AI Act Article 53 + DSM
+#         Article 4 + German UrhG §44b. The /ai.txt file is the
+#         human-readable + machine-readable companion policy document.
+# 0.4.0 — Removed the Content-Security-Policy-Report-Only
+#         "require-trusted-types-for 'script'" line. It was report-only
+#         (enforced nothing), had no reporting endpoint (reports went
+#         nowhere), and only spammed "[Report Only] This document
+#         requires 'TrustedScriptURL' assignment." in every console from
+#         the SW registration. Zero security value as a stub; real
+#         Trusted Types is a separate proper effort, not a noisy no-op.
+# 0.3.0 — CSP connect-src/img-src widened for WalletConnect v2 / Reown
+#         AppKit: api.web3modal.org + *.walletconnect.org (pulse/relay
+#         wildcards) + *.reown.com + *.web3modal.* were BLOCKED, so
+#         Reown "Failed to fetch remote project configuration" -> WC
+#         init degraded + reconnect churned on /admin & /refer. Also
+#         added the public RPC fallbacks (publicnode/ankr/1rpc/drpc) so
+#         the resilience fallback chain isn't CSP-blocked. img-src now
+#         allows WC/Reown wallet-icon hosts for the connect modal.
+# 0.2.0 — Strict Content-Security-Policy added (plan §4.1). Defends against
+#         XSS shard exfiltration. connect-src is the critical directive:
+#         even if an attacker injects JS that finds secrets in memory, it
+#         cannot fetch() them to an attacker-controlled origin. Trusted
+#         Types are required for script via report-only initially (watch
+#         reports for 2-3 weeks, then enforce). Plus standard hardening:
+#         X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
+#         Permissions-Policy.
+# 0.1.0 — initial NoKLock SPA rewrite rules + caching + CORS for JSON.
+
+# NoKLock PWA — single-page-app rewrite rules.
+# React Router handles client-side routing for /enrol, /restore, /nok, etc.
+# Without this, a direct visit or browser refresh on any of those paths
+# would 404 because Apache looks for a matching file on disk.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # Disable MultiViews — Apache/LiteSpeed content-negotiation can intercept
+  # before our rewrite fires and 404 a trailing-slash route. Belt-and-braces.
+  Options -MultiViews
+  # Pass real files and real directories through untouched (assets/,
+  # share-cards/, etc.).
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  # Everything else: serve the SPA shell. Use `^` (start-of-string match)
+  # which fires on any URL including trailing-slash paths — the previous
+  # `.` pattern silently failed on /marketing/ on LiteSpeed.
+  RewriteRule ^ /index.html [L]
+</IfModule>
+# Belt: if any future LiteSpeed quirk still 404s a SPA route, the explicit
+# FallbackResource directive picks up the failed lookup (mod_dir, Apache 2.2.16+).
+<IfModule mod_dir.c>
+  FallbackResource /index.html
+  # 2026-06-05 — Disable DirectorySlash auto-redirect. Without this, Apache
+  # 301-redirects /pricing → /pricing/ because the prerendered subdir exists
+  # (prerender writes /pricing/index.html). The canonical in seo.ts is the
+  # no-trailing-slash form, so the 301 chain produced a canonical-vs-served
+  # URL mismatch that hurt SEO trust. With DirectorySlash Off, /pricing is
+  # served directly from /pricing/index.html via mod_dir's DirectoryIndex
+  # default, no redirect.
+  DirectorySlash Off
+</IfModule>
+
+# Static asset caching — Vite emits hashed filenames so this is safe + fast.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType application/wasm "access plus 1 year"
+  ExpiresDefault "access plus 1 hour"
+  # 2026-06-11 wallet rebuild: the app shell must never be stale. A cached
+  # index.html resurrects an entire OLD build from still-on-server hashed
+  # chunks (the mixed-build failure of 2026-06-11). HTML is revalidated on
+  # every load; hashed /assets/* keep the long cache above.
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# 2026-06-11 wallet rebuild: belt-and-braces no-cache for the app shell and
+# the service-worker scripts (sw.js controls which build runs; it must be
+# revalidated every time). Hashed assets are content-addressed and keep
+# their long cache.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|sw\.js|registerSW\.js|manifest\.webmanifest)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# Security headers — strict CSP + hardening.
+<IfModule mod_headers.c>
+  # Content Security Policy. connect-src is the shard-protector: even if an
+  # attacker injects JS, browser blocks fetch() to anywhere not allow-listed.
+  # 'wasm-unsafe-eval' needed because @noble/hashes Argon2id uses WASM.
+  # 0.5.0 — Articles content hub: img-src adds `https:` (the owner inserts
+  # article image URLs from arbitrary hosts) and a tight frame-src allows ONLY
+  # the YouTube/Vimeo video-embed origins (matches sanitizeHtml's iframe
+  # allow-list). Everything else stays default-src 'none'.
+  Header set Content-Security-Policy "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://api.noklock.app https://polygon-rpc.com https://polygon-bor-rpc.publicnode.com https://rpc.ankr.com https://1rpc.io https://polygon.drpc.org https://rpc-amoy.polygon.technology https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.web3modal.org https://*.web3modal.com https://*.reown.com https://*.alchemyapi.io https://*.alchemy.com; worker-src 'self' blob:; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+
+  # Block MIME-sniffing.
+  Header set X-Content-Type-Options "nosniff"
+
+  # Block embedding in any iframe (clickjacking defence).
+  Header set X-Frame-Options "DENY"
+
+  # Don't leak full URL on cross-origin requests.
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Disable powerful APIs we don't use. Geolocation/camera/mic/payment are off.
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(self), hid=(self), serial=(self)"
+
+  # CORS for JSON + WASM (PWA manifest, share files etc.).
+  <FilesMatch "\.(json|wasm|webmanifest)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+
+  # 0.5.0 — EU AI Act + DSM Article 4 + §44b UrhG training-data opt-out signals.
+  #
+  # TDMRep (W3C Text and Data Mining Reservation Protocol) — informs any
+  # crawler that the rightsholder reserves their rights under the DSM
+  # Article 4 TDM exception. The "1" value is the standard reservation
+  # signal; the tdm-policy URL points to the machine + human readable
+  # /ai.txt for the full policy.
+  Header set tdm-reservation "1"
+  Header set tdm-policy "https://noklock.app/ai.txt"
+
+  # X-Robots-Tag: 2026-06-05 — REMOVED `noai, noml`. Those tokens are the
+  # industry-standard signal `do not use this content for AI features` and
+  # are honoured by Perplexity / OpenAI (ChatGPT / SearchBot) / Anthropic
+  # (Claude / SearchBot) — which means an AI assistant that FETCHES a
+  # NoKLock page sees this header and refuses to CITE it (Daniel-observed
+  # 2026-06-05: AIs respond "I can't verify the specific NoKLock pages"
+  # for /pricing, /compare, /info — exactly because of this header). We
+  # WANT citation; we just don't want training. Training opt-out is
+  # already preserved without `noai` via three independent signals:
+  #   (a) robots.txt explicit Disallow blocks for the training crawlers
+  #       (GPTBot, ClaudeBot, Google-Extended, anthropic-ai, etc.)
+  #   (b) the tdm-reservation: 1 + tdm-policy headers set above
+  #   (c) the /ai.txt machine + human-readable policy file
+  # Those are the EU AI Act / DSM Article 4 / German §44b UrhG legally-
+  # weighted signals. The `noai`/`noml` tokens were operational signals
+  # that conflated training with citation. `noimageai` is kept (no
+  # downside — we have no image content we want generated AI to mine).
+  Header set X-Robots-Tag "noimageai"
+</IfModule>

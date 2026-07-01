@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.noklock.twa",
+      "sha256_cert_fingerprints": [
+        "42:C2:0E:59:70:5D:0A:92:A0:21:FF:D0:AA:DF:74:49:F2:93:E8:01:3D:78:45:F3:C3:A8:CA:18:33:67:AE:4C",
+        "65:D2:95:8C:CC:6B:65:44:A3:70:EA:43:C3:40:ED:93:E2:3C:55:13:1A:20:B5:9E:D3:40:CE:8A:B9:14:0C:B9"
+      ]
+    }
+  }
+]

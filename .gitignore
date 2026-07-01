@@ -1,14 +1,60 @@
-# This repo is docs-only — no source, no secrets. Belt-and-suspenders ignores
-# so nothing sensitive can ever be committed by accident.
+# ================= NoKLock public repo — secret-proof .gitignore =================
+# Belt-and-braces. Even if the private dev tree is re-synced into this folder,
+# NONE of the following can ever be committed. Real secrets live only on the
+# server and in the private monorepo. This public repo is source + the public
+# build config (apps/web/.env.public) so the app is reproducible & auditable.
+
+# --- backend / server: NEVER publish (the off-chain trust root) ---
+server-form-b/
+server-form-a/
+
+# --- env / secrets (allow ONLY the public + example configs) ---
 .env
 .env.*
+!.env.public
+!.env.example
+
+# --- private keys / mnemonics / keystores ---
 *.key
 *.pem
+*.p12
+*.pfx
+*.jks
 *.keystore
+keystore.properties
 keystores/
 secrets/
+*mnemonic*
+*seed*.txt
+*.secret
+secrets.*
+
+# --- databases (may hold user / licence PII) ---
+*.sqlite
+*.sqlite3
+*.db
+**/data/*.sqlite*
+
+# --- dependencies / build output ---
 node_modules/
 dist/
+build/
+.vite/
+coverage/
+
+# --- foundry build artifacts (if contracts are added later) ---
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/foundry.lock
+
+# --- backups / archives / logs / editor & tooling junk ---
+backups/
+_backup-*/
+*.tgz
+*.zip
+*.log
 .DS_Store
 Thumbs.db
-*.log
+*.bak*
+kca0.xml

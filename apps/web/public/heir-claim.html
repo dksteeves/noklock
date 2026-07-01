@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>NoKLock — Operator-free heir-claim floor</title>
+<!--
+  OPERATOR-FREE FLOOR (disappearance test). This page is fully self-contained:
+  no frameworks, no NoKLock servers, no third-party scripts. It reads the
+  PUBLIC blockchain directly over JSON-RPC to tell an heir whether their
+  inheritance has been triggered and which next-of-kin NFTs they hold.
+
+  SAVE IT. Right-click → "Save page as…" and keep a copy on a USB stick /
+  printout. It will keep working even if noklock.app and Form B are gone — the
+  vault lives on the public chain and in the share files your designator gave
+  you, NOT on any NoKLock computer.
+
+  Function selectors are precomputed (so this file needs no crypto library):
+    hasRoleForVault(bytes32,uint8,address)  0x449233be
+    activeActivationCount(bytes32)          0xdc20a91d
+    meta(uint256)                           0xcd5cfdaf
+-->
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b1020; color: #e5e7eb; font-family: -apple-system, system-ui, Segoe UI, Roboto, sans-serif; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 8px; color: #93c5fd; }
+  p, li { font-size: 14px; }
+  a { color: #67e8f9; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; word-break: break-all; }
+  .card { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; margin-top: 14px; }
+  label { display: block; font-size: 12px; color: #9ca3af; margin: 10px 0 3px; }
+  input { width: 100%; padding: 9px 10px; background: #0b1020; border: 1px solid #334155; border-radius: 6px; color: #e5e7eb; font-family: ui-monospace, monospace; font-size: 12px; }
+  button { margin-top: 14px; padding: 10px 18px; background: #0e7490; color: #fff; border: 0; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  .result { margin-top: 14px; }
+  .row { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #1f2937; }
+  .row .k { flex: 0 0 200px; color: #9ca3af; font-size: 13px; }
+  .ok { color: #4ade80; } .no { color: #f87171; } .warn { color: #fbbf24; }
+  .muted { color: #9ca3af; font-size: 13px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; background: #1f2937; }
+  .banner { background: #052e2b; border: 1px solid #115e59; border-radius: 8px; padding: 12px 14px; margin-top: 16px; }
+  .danger { background: #2a0d0d; border-color: #7f1d1d; }
+  ol li { margin: 6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NoKLock — operator-free heir-claim floor</h1>
+  <p class="muted">If NoKLock the company has vanished, you can still claim. The vault lives on the public Polygon blockchain and in the share files your designator gave you — not on any NoKLock server. This page reads the chain <strong>directly</strong> to show you where things stand.</p>
+
+  <div class="banner">
+    <strong>Save this page.</strong> Right-click → “Save page as…”. It is a single self-contained file — it will keep working from a USB stick with no NoKLock website in the loop.
+  </div>
+
+  <h2>1 · Your vault details</h2>
+  <p class="muted">Your designator should have given you these (or a pre-filled link). The RPC is any public Polygon node — change it to one you trust if you like.</p>
+  <div class="card">
+    <label>Public Polygon RPC URL</label>
+    <input id="rpc" value="https://polygon-rpc.com" />
+    <label>NoKLock SBT contract address (0x…)</label>
+    <input id="sbt" placeholder="0x… (the NoKLockSBT contract — from your designator)" />
+    <label>Vault ID (0x… 32 bytes)</label>
+    <input id="vault" placeholder="0x… (your vault id — from the manifest / your designator)" />
+    <label>Your heir wallet address (0x…)</label>
+    <input id="wallet" placeholder="0x… (the wallet your designator named as next-of-kin)" />
+    <button id="go">Check on-chain status</button>
+    <div id="out" class="result"></div>
+  </div>
+
+  <h2>2 · What the result means</h2>
+  <ul>
+    <li><strong>Inheritance fired</strong> — the dead-man’s switch (or an heir-claim) has activated on-chain. Your next-of-kin access is live; proceed to reconstruct the vault.</li>
+    <li><strong>You hold an Activation / Voting / Revocation NFT</strong> — these soulbound tokens are your on-chain proof of role. Voting holders are exactly who an M-of-N heir quorum needs.</li>
+    <li><strong>Not fired yet</strong> — the owner is still checking in (alive), or the switch has not yet been triggered. Nothing to claim until it fires.</li>
+  </ul>
+
+  <h2>3 · How to actually reconstruct the vault</h2>
+  <p>The cryptography is fully client-side and needs <em>no</em> NoKLock server:</p>
+  <ol>
+    <li>If the NoKLock app is reachable, open <a id="restoreLink" href="/heir/restore">the heir-restore page</a> — drop your claim-envelope, the manifest, and the share files, then enter the master password your designator shared. For an M-of-N vault, use the <strong>“Form B unavailable? local heir quorum”</strong> panel: each heir signs locally and the app verifies the signatures against the on-chain Voting holders — again, no NoKLock server.</li>
+    <li>If the NoKLock app is gone too, the restore is still pure Shamir + AEAD: any wallet/crypto engineer can recombine the threshold of share files and decrypt with the master password using the open manifest. The manifest documents the scheme (SLIP-39 / Shamir threshold + per-share AEAD).</li>
+    <li>The share files could be local folders, a USB stick, or cloud links — wherever your designator put them. You only need <em>threshold-many</em>, not all of them.</li>
+  </ol>
+
+  <h2>What you need</h2>
+  <ul>
+    <li>The <strong>master password</strong> your designator shared with you (out-of-band — not on this page).</li>
+    <li>At least the <strong>threshold</strong> number of <strong>share files</strong>.</li>
+    <li>(M-of-N vaults) <strong>M heir wallets</strong> willing to sign — their addresses are the on-chain Voting holders this page can confirm.</li>
+  </ul>
+
+  <p class="muted" style="margin-top:24px">This page makes only read-only calls to the RPC you choose. It never sees your master password or your private keys.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var SEL_HASROLE = "0x449233be"; // hasRoleForVault(bytes32,uint8,address)
+  var SEL_ACTIVECOUNT = "0xdc20a91d"; // activeActivationCount(bytes32)
+  var ROLES = [{ id: 0, name: "Activation" }, { id: 1, name: "Voting" }, { id: 2, name: "Revocation" }];
+
+  function $(id) { return document.getElementById(id); }
+  function clean(hex) { return (hex || "").trim().replace(/^0x/i, ""); }
+  function pad32(hex) { hex = clean(hex); if (hex.length > 64) hex = hex.slice(-64); return hex.padStart(64, "0"); }
+  function encAddr(a) { return pad32(a.toLowerCase()); }
+  function encBytes32(b) { return pad32(b); }
+  function encUint(n) { return pad32(BigInt(n).toString(16)); }
+
+  // Prefill from URL query (?rpc=&sbt=&vault=&wallet=) so a designator can hand
+  // the heir a ready-to-run link or pre-filled saved file.
+  (function prefill() {
+    try {
+      var q = new URLSearchParams(location.search);
+      ["rpc", "sbt", "vault", "wallet"].forEach(function (k) {
+        var v = q.get(k);
+        if (v) $(k).value = v;
+      });
+      // If the static file is served from a live NoKLock origin, point the
+      // restore link at this origin; otherwise leave the relative path.
+      if (location.origin && location.origin.indexOf("http") === 0) {
+        $("restoreLink").href = location.origin + "/heir/restore";
+      }
+    } catch (e) { /* no-op */ }
+  })();
+
+  function rpcCall(rpc, to, data) {
+    return fetch(rpc, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: to, data: data }, "latest"] })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.error) throw new Error(j.error.message || "RPC error");
+      return j.result || "0x";
+    });
+  }
+
+  function toBigInt(hexResult) {
+    var h = clean(hexResult);
+    if (!h) return 0n;
+    return BigInt("0x" + h);
+  }
+
+  function rowHTML(k, vHtml) { return '<div class="row"><div class="k">' + k + '</div><div>' + vHtml + '</div></div>'; }
+
+  $("go").addEventListener("click", function () {
+    var rpc = $("rpc").value.trim();
+    var sbt = $("sbt").value.trim();
+    var vault = $("vault").value.trim();
+    var wallet = $("wallet").value.trim();
+    var out = $("out");
+    if (!/^0x[0-9a-fA-F]{40}$/.test(sbt)) { out.innerHTML = '<p class="no">Enter a valid SBT contract address (0x + 40 hex).</p>'; return; }
+    if (!/^0x[0-9a-fA-F]{1,64}$/.test(vault)) { out.innerHTML = '<p class="no">Enter a valid vault id (0x…).</p>'; return; }
+    if (!/^0x[0-9a-fA-F]{40}$/.test(wallet)) { out.innerHTML = '<p class="no">Enter a valid heir wallet address (0x + 40 hex).</p>'; return; }
+    if (!/^https?:\/\//.test(rpc)) { out.innerHTML = '<p class="no">Enter a valid RPC URL (https://…).</p>'; return; }
+
+    $("go").disabled = true;
+    out.innerHTML = '<p class="muted">Reading the chain…</p>';
+
+    var dataActive = SEL_ACTIVECOUNT + encBytes32(vault);
+    var roleCalls = ROLES.map(function (role) {
+      var data = SEL_HASROLE + encBytes32(vault) + encUint(role.id) + encAddr(wallet);
+      return rpcCall(rpc, sbt, data).then(function (res) { return { role: role, tokenId: toBigInt(res) }; });
+    });
+
+    Promise.all([rpcCall(rpc, sbt, dataActive).then(toBigInt)].concat(roleCalls))
+      .then(function (results) {
+        var activeCount = results[0];
+        var roles = results.slice(1);
+        var html = "";
+        var fired = activeCount > 0n;
+        html += rowHTML("Inheritance fired?",
+          fired ? '<span class="ok">YES — ' + activeCount.toString() + ' activation(s) live on-chain. You can proceed to claim.</span>'
+                : '<span class="warn">Not yet — no activation is live for this vault. The owner is still checking in, or the switch has not fired.</span>');
+        roles.forEach(function (r) {
+          var holds = r.tokenId > 0n;
+          html += rowHTML(r.role.name + " NFT",
+            holds ? '<span class="ok">✓ held</span> <span class="pill mono">token #' + r.tokenId.toString() + '</span>'
+                  : '<span class="no">— not held by this wallet</span>');
+        });
+        var anyRole = roles.some(function (r) { return r.tokenId > 0n; });
+        if (!anyRole) {
+          html += '<div class="banner danger" style="margin-top:14px"><strong>This wallet holds no role for this vault.</strong> Check you entered the right heir wallet, vault id, and SBT contract — your designator should have given you all three.</div>';
+        } else if (fired) {
+          html += '<div class="banner" style="margin-top:14px">Your inheritance is live. Go to section 3 and reconstruct the vault — no NoKLock server required.</div>';
+        }
+        out.innerHTML = html;
+      })
+      .catch(function (e) {
+        out.innerHTML = '<p class="no">Could not read the chain: ' + (e && e.message ? e.message : String(e)) + '. Try a different public Polygon RPC URL.</p>';
+      })
+      .finally(function () { $("go").disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

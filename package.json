@@ -1,0 +1,22 @@
+{
+  "name": "noklock-monorepo",
+  "version": "0.3.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "description": "NoKLock — self-custodial vault for crypto seed phrases, sealed letters, wills and documents, with inheritance via soul-bound tokens on Polygon. Monorepo root.",
+  "scripts": {
+    "build:web": "npm run build --workspace=noklock-web",
+    "dev:web": "npm run dev --workspace=noklock-web",
+    "test:crypto-core": "npm test --workspace=@soulchain/crypto-core",
+    "test:storage-adapters": "npm test --workspace=@soulchain/storage-adapters",
+    "test:all": "npm test --workspaces --if-present",
+    "typecheck:all": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "BUSL-1.1"
+}

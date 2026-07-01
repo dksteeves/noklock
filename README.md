@@ -2,7 +2,7 @@
 
 **[noklock.app](https://noklock.app)** lets you pass crypto seed phrases, sealed letters, documents and images to your next-of-kin **without ever giving anyone your keys** — self-custody while you're alive, an automatic on-chain handover when you're not.
 
-> This repository is the public, verifiable overview of NoKLock. The application source is licensed under BUSL-1.1 and is **not** published here.
+> This repository is the **source of the NoKLock web app**, licensed **BUSL-1.1** (source-available). It's here so you can read it, audit it, and **reproduce the deployed build** — confirming the code in your browser is exactly this source. See **[`REPRODUCE.md`](REPRODUCE.md)**. The server (a thin convenience layer that holds no vault data and cannot decrypt anything) is not published.
 
 ## What it is
 
@@ -22,6 +22,7 @@
 - Architecture, security & all 5 contracts (source-verified): <https://noklock.app/info?tab=contracts>
 - Honest comparisons (vs Casa, Vault12, Inheriti, Deadhand): <https://noklock.app/compare>
 - Run the real cryptographic pipeline on throwaway data: <https://noklock.app/prove-it>
+- **Build it yourself** from this source (clone → build → confirm it's exactly this source): [`REPRODUCE.md`](REPRODUCE.md)
 - Heir guide (for next-of-kin): <https://noklock.app/heir>
 
 ## Contracts — Polygon mainnet (all source-verified on PolygonScan)
@@ -37,7 +38,7 @@
 ## Assurance
 
 - 154 automated contract tests on Solidity 0.8.35, covering every state transition and revert path.
-- Multiple independent AI review passes from two distinct sources; full deploy dress-rehearsal on a local Polygon mainnet fork before broadcast.
+- The code and contracts have been reviewed and audited across multiple independent AI models (of course) — plus a full deploy dress-rehearsal on a local Polygon mainnet fork before broadcast.
 - All five contracts source-verified on PolygonScan; deterministic finite-state-machine design with cryptographically-witnessable on-chain state.
 - Open bug-bounty programme: verified reports earn a free Lifetime licence; criticals also earn USDC. See <https://noklock.app/info?tab=contracts#bug-bounty>.
 

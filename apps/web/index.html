@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>NoKLock — your keys, your documents, your rules</title>
+    <meta name="description" content="Self-custodial vault for crypto seed phrases, wills, sealed letters and documents. Next-of-kin inheritance via soul-bound tokens on Polygon." />
+    <!-- 2026-05-20: AI training-data opt-out signals. Permits real-time
+         retrieval + citation by AI search/answer bots; reserves rights
+         against training-dataset inclusion. Legally weighted under EU AI
+         Act Article 53 + DSM Article 4 + German §44b UrhG. Companion
+         policy: /ai.txt. The matching X-Robots-Tag + TDMRep HTTP headers
+         are also served via .htaccess. -->
+    <!-- 2026-06-05: REMOVED noai + noml — they were telling AI assistants
+         (Perplexity, ChatGPT, Claude) NOT to cite NoKLock content even
+         when they had successfully fetched it. We want citation. Training
+         opt-out is still preserved via robots.txt training-bot Disallows,
+         the tdm-reservation header, and the /ai.txt policy file. See
+         matching note in public/.htaccess. -->
+    <meta name="robots" content="noimageai, index, follow" />
+    <meta name="tdm-reservation" content="1" />
+    <meta name="tdm-policy" content="https://noklock.app/ai.txt" />
+    <!-- Open Graph (Facebook, Slack, Discord, LinkedIn share cards) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="NoKLock — your keys, your documents, your rules" />
+    <meta property="og:description" content="Self-custodial vault for crypto seed phrases, wills, sealed letters and documents. Inheritance via soul-bound tokens on Polygon." />
+    <meta property="og:image" content="https://noklock.app/og-image.png" />
+    <meta property="og:url" content="https://noklock.app/" />
+    <meta property="og:site_name" content="NoKLock" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="NoKLock — your keys, your documents, your rules" />
+    <meta name="twitter:description" content="Self-custodial vault for crypto seed phrases, wills, sealed letters and documents." />
+    <meta name="twitter:image" content="https://noklock.app/og-image.png" />
+    <link rel="canonical" href="https://noklock.app/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jura:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Structured data: read by Google rich results AND by AI crawlers that
+         don't execute JS. Data block (not executed) — unaffected by CSP. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://noklock.app/#org",
+          "name": "NoKLock",
+          "url": "https://noklock.app/",
+          "logo": "https://noklock.app/logo-512.png",
+          "email": "hello@noklock.app",
+          "foundingDate": "2026",
+          "description": "Self-custodial cryptographic recovery and on-chain next-of-kin inheritance for crypto seed phrases, wills, sealed letters, documents, and images. Five source-verified smart contracts on Polygon. Multiple independent AI audit passes from two distinct sources. 154/154 automated contract tests on Solidity 0.8.35. Implemented as a deterministic finite state machine with cryptographically-witnessable on-chain state — anyone can verify a vault's current lifecycle state without trusting the operator.",
+          "knowsAbout": ["self-custody wallet", "crypto inheritance", "dead-man's switch", "Shamir secret sharing", "SLIP-39", "Argon2id", "ERC-5192 soulbound NFT", "Hybrid-E email-NoK", "social-engineering-proof inheritance", "duress decoy vault"],
+          "sameAs": [
+            "https://x.com/noklock_app",
+            "https://polygonscan.com/address/0x3887922317D891E38546f6714c7757D7fd312057"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://noklock.app/#website",
+          "url": "https://noklock.app/",
+          "name": "NoKLock",
+          "publisher": { "@id": "https://noklock.app/#org" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://noklock.app/info?tab={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "NoKLock",
+          "applicationCategory": "SecurityApplication",
+          "applicationSubCategory": "CryptocurrencyWallet",
+          "operatingSystem": "Web (Progressive Web App), Android, iOS via PWA",
+          "url": "https://noklock.app/",
+          "description": "Self-custodial vault for crypto seed phrases, sealed letters, documents, and images. Split with SLIP-39 Shamir + encrypt with Argon2id-derived AEAD keys, all in your browser. Three recovery modes through one pipeline: self-recovery (you lost a wallet), social-recovery (lost-wallet guardian quorum), and post-mortem inheritance (on-chain dead-man's switch + soulbound NFT trigger to your designated next-of-kin). Four signature differentiators no competitor combines: Duress-proof (decoy vault), Social-engineering-proof (multi-NoK M-of-N quorum), NoKLock-proof (works even if we disappear), Self-custodial (we never see your data).",
+          "offers": [
+            { "@type": "Offer", "name": "Free tier", "price": "0", "priceCurrency": "USD", "description": "1 vault, 1 next-of-kin, soulbound NFT trigger, sealed letter, full crypto core. No expiry." },
+            { "@type": "Offer", "name": "Standard (annual)", "price": "99", "priceCurrency": "USD", "description": "Founder pricing — first 10,000 paid mints. Regular price $149/yr. Up to 5 next-of-kin per wallet on-chain, social-recovery guardians, document/image vaults (Premium-gated), multi-NoK voting." },
+            { "@type": "Offer", "name": "Standard Lifetime (one-time)", "price": "299", "priceCurrency": "USD", "description": "Founder pricing — first 10,000 paid mints. Regular price $499. Standard feature set paid once." },
+            { "@type": "Offer", "name": "Premium (annual)", "price": "199", "priceCurrency": "USD", "description": "Founder pricing — first 10,000 paid mints. Regular price $299/yr. Up to 10 next-of-kin per wallet, duress-decoy vault (Premium-only), multi-seed-per-vault, configurable Shamir up to 5-of-9, document + image vaults, guardian-management UI." },
+            { "@type": "Offer", "name": "Lifetime Premium (one-time)", "price": "499", "priceCurrency": "USD", "description": "Founder pricing — first 10,000 paid mints. Regular price $799. Premium feature set paid once. The high-end / inheritance-grade tier." }
+          ],
+          "softwareVersion": "0.5.x",
+          "license": "https://spdx.org/licenses/BUSL-1.1.html"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is NoKLock custodial — does it hold my keys?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. NoKLock is 100% self-custodial. Encryption, Shamir secret-splitting (SLIP-39), Argon2id key derivation, and AEAD all run in your browser. The NoKLock back-end and smart contracts hold no keys and cannot decrypt anything. There is no pooled honeypot to drain because no funds or user data are pooled anywhere." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens to my crypto when I die?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You designate next-of-kin who receive soulbound ERC-5192 NFTs on Polygon at the time of designation. If you stop sending heartbeats for a grace window you chose (default 60 days, configurable up to 365), an on-chain dead-man's switch fires automatically via Chainlink Automation, and an M-of-N quorum of your designated next-of-kin can claim your vault. It is proof-of-life, never proof-of-death — no one (not even NoKLock) can assert you are deceased to the system. The heir restores using the share files plus the master password you shared with them outside NoKLock." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a next-of-kin steal my vault while I'm alive?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Each heir's soulbound NFT is minted inert (LockedInactive); only the on-chain Oracle can flip it to active, and only after sustained heartbeat silence past your chosen grace window. You can revoke any next-of-kin pre-emptively from /nok. Release additionally requires an M-of-N quorum of independent NoKs from different wallets (configurable up to 5-of-9). A single rogue or coerced next-of-kin cannot act alone. This is the Social-engineering-proof property of the system." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if I'm coerced into revealing my master password?",
+              "acceptedAnswer": { "@type": "Answer", "text": "On the Premium tier, NoKLock supports an optional duress decoy vault — a second vault enrolled in parallel with its own separate master password. Under coercion you reveal the decoy password; the attacker decrypts a believable throwaway vault and walks away thinking they won. Your real vault stays cryptographically hidden alongside the decoy, indistinguishable from outside. The two vaults are mathematically real (separate AEAD pipelines, separate Argon2id-derived keys), not a security-through-obscurity trick. No custodial competitor offers this." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if NoKLock disappears?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Recovery is 100% client-side — your shares (in your own cloud accounts) plus your master password fully reconstruct your vault with no NoKLock server ever contacted. Inheritance runs on-chain via Polygon + Chainlink Automation — a decentralised keeper network — so the dead-man's switch fires regardless of whether NoKLock the company still exists. The PWA's blockchain reads automatically fall back to a public Polygon RPC if our service is down. The on-chain selfHeartbeat path is fully trustless. The five contracts are immutable and source-verified on PolygonScan. This is the NoKLock-proof property: the protocol survives the operator." }
+            },
+            {
+              "@type": "Question",
+              "name": "Has NoKLock been audited?",
+              "acceptedAnswer": { "@type": "Answer", "text": "154 automated contract tests on Solidity 0.8.35 covering every state transition and revert path, including the dead-man's switch, the M-of-N social-recovery quorum, the Hybrid-E email-NoK escrow EIP-712 path, the soulbound transfer block, and the Chainlink forwarder one-shot bootstrap. Multiple independent AI review passes from two distinct sources — round 1 (external) produced 5 Critical + 9 High + 12 Medium + 10 Low findings, all 5 Crits + 9 Highs fixed in code; round 2 (external follow-up) found 5 additional issues on the round-1 patches, all fixed; Claude ran three self-reviews in between. Full deploy dress-rehearsal on a local Polygon mainnet fork before broadcast. Basic SolidityScan review on the deployed bytecode: License 89.3 / Oracle 90.49 / Escrow 73.0 (all 0 Critical / 0 High); SBT 62.12 + Recovery 61.79 capped by documented architectural false positives walked through line-by-line on Info → Contracts. All five contracts source-verified on PolygonScan. We have determined our contracts are secure and suited for NoKLock's unique applications and do not intend to commission a $50k formal audit — there is no pooled TVL to protect, soulbound tokens are valueless, the attack surface is five small contracts with no complex DeFi composition. Bug bounty programme is live: verified reports earn a free Lifetime licence; criticals earn USDC payouts." }
+            },
+            {
+              "@type": "Question",
+              "name": "How is NoKLock different from Casa, Vault12, Ledger Recover, Nunchuk?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Four properties no competitor combines: (1) Duress-proof decoy vault — Casa, Vault12, Ledger Recover, Nunchuk are all at least partially custodial, so they can't pretend not to have your vault. (2) Social-engineering-proof multi-NoK M-of-N quorum from independent wallets — most competitors use single-signer recovery. (3) NoKLock-proof: works even if we disappear (on-chain inheritance trigger, no operator dependency). (4) ERC-5192 soulbound NFT as the inheritance record — rare-in-production standard, our use is the only known production use for crypto-inheritance." }
+            },
+            {
+              "@type": "Question",
+              "name": "How does pricing work — is it a subscription?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Paid in USDC directly on Polygon — no subscription processor, no credit-card relationship. Five tiers: Free ($0), Standard ($99/yr founder, $149/yr regular), Standard Lifetime ($299 / $499 once), Premium ($199/yr founder, $299/yr regular), Lifetime Premium ($499 / $799 once). Founder pricing applies to the first 10,000 paid mints across all tiers, contract-enforced with an automatic step-up to regular price at zero remaining. The Lifetime tiers are paid once and never expire — the same feature set as their yearly counterpart, paid up-front instead." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I leave my crypto to my family without giving up my keys?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use a self-custodial inheritance tool rather than a custodian. With NoKLock you keep sole control of your keys while you're alive: your seed phrase is Shamir-split and AEAD-encrypted in your browser, the encrypted shares go to your own cloud accounts, and you designate next-of-kin who receive soulbound ERC-5192 NFTs on Polygon. Nothing transfers until an on-chain dead-man's switch fires after you stop checking in for a grace window you choose. NoKLock never holds your keys, shares, or master password — there is no company to trust with them while you're alive, and the inheritance still completes on-chain even if NoKLock disappears." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I pass on a seed phrase to my heirs safely?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Don't hand anyone the raw words, and don't rely on a single sheet of paper a fire or a finder can destroy. NoKLock splits the seed into encrypted shares (SLIP-39 Shamir, T-of-N) stored across your own clouds and binds an heir on-chain via soulbound NFTs. The heir reconstructs it only after the dead-man's switch fires, using a threshold of the shares plus a master password you gave them out-of-band. Best practice is defence-in-depth: pair it with a paper backup in a safe or a hardware-wallet recovery card." }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a crypto dead man's switch?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A mechanism that hands your crypto to your heirs only after you've been silent for a set period. NoKLock's runs on-chain: you send periodic heartbeats (free signed messages, or a trustless on-chain selfHeartbeat); if none arrive for a grace window you chose (default 60 days, up to 365), Chainlink Automation fires performUpkeep and your designated next-of-kin can claim. It is proof-of-life, never proof-of-death — no one, including NoKLock, can declare you deceased; only the absence of your own heartbeat triggers it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can my heir inherit if they don't use crypto?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes — NoKLock's Hybrid-E lets you designate an heir by email instead of a wallet. The inheritance NFT is held in an escrow contract until your dead-man's switch fires; the heir then gets a plain-language walkthrough at noklock.app/nok-claim, creates a wallet, and a server EIP-712 attestation rebinds the soulbound NFT to their new wallet. They never need to understand seed phrases up front, and the autonomous on-chain trigger is unchanged." }
+            }
+          ]
+        },
+        {
+          "@type": "Blog",
+          "@id": "https://noklock.app/updates#blog",
+          "url": "https://noklock.app/updates",
+          "name": "NoKLock Updates",
+          "description": "The public NoKLock changelog — owner-signed product updates, contract changes, and launch notes. No mailing list, no tracking.",
+          "publisher": { "@id": "https://noklock.app/#org" },
+          "inLanguage": "en"
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to enrol a crypto seed phrase vault on NoKLock",
+          "description": "Step-by-step: split your BIP39 mnemonic via Shamir, encrypt the shares with AEAD, distribute across your own cloud accounts, designate a next-of-kin, and verify with a test-restore drill. Everything runs in your browser; NoKLock never sees the seed.",
+          "totalTime": "PT15M",
+          "tool": [
+            { "@type": "HowToTool", "name": "Any EVM-compatible wallet (MetaMask, Trust Wallet, hardware wallet via WalletConnect)" },
+            { "@type": "HowToTool", "name": "3 or more separate cloud storage accounts (Google Drive, Dropbox, OneDrive, IPFS, Arweave — your choice)" },
+            { "@type": "HowToTool", "name": "Your BIP39 mnemonic (12 or 24 words)" },
+            { "@type": "HowToTool", "name": "A new master password (Argon2id KDF, never shared)" }
+          ],
+          "step": [
+            { "@type": "HowToStep", "name": "Connect a wallet", "text": "Connect any EVM wallet at noklock.app. Free tier requires nothing else." },
+            { "@type": "HowToStep", "name": "Choose what to protect", "text": "Pick 'A crypto seed phrase' from the enrol picker. The same pipeline also handles sealed letters, documents, and images." },
+            { "@type": "HowToStep", "name": "Enter airgap mode", "text": "Click 'I'm offline — start the airgap'. The PWA blocks every outbound network call from this tab until you reach Done. Optionally also turn off the device's Wi-Fi + mobile data." },
+            { "@type": "HowToStep", "name": "Enter your seed", "text": "Type or paste your 12 or 24 BIP39 words. The PWA validates the checksum locally." },
+            { "@type": "HowToStep", "name": "Choose threshold", "text": "Pick how many shares (N) and how many of those are needed to recover (T). 3-of-5 is the recommended default. 2-of-3 to 5-of-9 supported (Premium)." },
+            { "@type": "HowToStep", "name": "Set master password", "text": "This is the canonical recovery key. Argon2id-derived. Never stored anywhere. You and your designated next-of-kin must both have it." },
+            { "@type": "HowToStep", "name": "Optional duress decoy (Premium)", "text": "Add a second master password + decoy mnemonic. Under coercion you reveal the decoy and the attacker sees a believable throwaway vault." },
+            { "@type": "HowToStep", "name": "Splitting + encrypting", "text": "The app splits your seed with SLIP-39 Shamir, encrypts each share with a randomly-chosen AEAD (AES-256-GCM or XChaCha20-Poly1305), signs the manifest with an Ed25519 key derived from your password. Runs entirely locally." },
+            { "@type": "HowToStep", "name": "Save share files", "text": "Either save into a folder NoKLock writes to directly (Chrome/Edge) OR download each file. Place each share in a DIFFERENT cloud account. NoKLock never uploads to your cloud — you place the files yourself." },
+            { "@type": "HowToStep", "name": "Test-restore drill", "text": "Before trusting it, open Restore in another tab, drop your threshold of share files, type your password, and verify the seed reconstructs correctly." },
+            { "@type": "HowToStep", "name": "Designate next-of-kin", "text": "Enter your heir's wallet address (or email for Hybrid-E) on the /nok page. The contract mints three soulbound NFTs (Activation / Voting / Revocation) on Polygon for each heir. M-of-N quorum configurable." }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <main style="max-width:48rem;margin:2rem auto;padding:0 1rem;font-family:system-ui,sans-serif;color:#e2e8f0;background:#0f172a">
+        <h1>NoKLock — self-custodial recovery &amp; inheritance for crypto</h1>
+        <p><strong>NoKLock</strong> is the cryptographic recovery layer for everything you can't afford to lose: crypto seed phrases, sealed letters, wills, documents, and images. <strong>100% self-custody</strong> — NoKLock never sees or holds your keys, shares, or data. SLIP-39 Shamir secret-splitting + Argon2id key derivation + AEAD (AES-256-GCM / XChaCha20-Poly1305) all run entirely in the user's browser. Five source-verified smart contracts on Polygon: NoKLockLicense, NoKLockSBT (ERC-5192 soulbound), NoKLockOracle (Chainlink dead-man's switch), NoKLockRecovery (M-of-N guardian quorum), NoKLockEscrow (Hybrid-E email-NoK).</p>
+        <h2>Four signature differentiators no competitor combines</h2>
+        <ul>
+          <li><strong>Duress-proof (Premium)</strong> — optional decoy vault with its own master password. Under coercion the user reveals the decoy; the attacker decrypts a believable throwaway while the real vault stays cryptographically hidden alongside it.</li>
+          <li><strong>Social-engineering-proof</strong> — multi-NoK M-of-N quorum from independent wallets. Phishing or coercing a single heir cannot release the vault.</li>
+          <li><strong>NoKLock-proof</strong> — works even if NoKLock the company disappears. Recovery is 100% client-side; inheritance runs entirely on-chain via Polygon + Chainlink.</li>
+          <li><strong>Self-custodial</strong> — NoKLock never sees seeds, shares, master passwords, or vault contents.</li>
+        </ul>
+        <h2>Three recovery modes, one pipeline</h2>
+        <ul>
+          <li><strong>Self-recovery</strong> — lost wallet, dead phone, forgotten passkey: any threshold of shares restores it.</li>
+          <li><strong>Social recovery</strong> — lost-wallet defence via an M-of-N guardian quorum + time-lock + owner-cancellation window.</li>
+          <li><strong>Post-mortem inheritance</strong> — a designated next-of-kin inherits via an on-chain dead-man's switch on Polygon (proof-of-life, never proof-of-death). Heirs without a wallet can be designated by email (Hybrid-E).</li>
+        </ul>
+        <h2>Audit posture (current as of 2026-05-20)</h2>
+        <p>154 automated contract tests on Solidity 0.8.35; multiple independent AI review passes from two distinct sources (all 5 Critical + 9 High findings from round 1 fixed in code, plus 5 follow-up findings from round 2 also fixed; Claude ran three self-reviews between rounds); local Polygon-mainnet-fork dress-rehearsal of the full deploy; SolidityScan review on the deployed bytecode (License 89.3 / Oracle 90.49 / Escrow 73.0 / SBT 62.12 / Recovery 61.79 — every Critical/High walked through line-by-line at Info → Contracts → "If you scan these yourself"); full source verified on PolygonScan; bug bounty programme live (verified reports earn a free Lifetime licence; criticals also earn USDC).</p>
+        <h2>Pricing (founder pricing for first 10,000 paid mints, contract-enforced)</h2>
+        <p>Free $0 · Standard $99/yr ($149 regular) · Standard Lifetime $299 ($499) · Premium $199/yr ($299) · Lifetime Premium $499 ($799). Paid in USDC directly on Polygon — no subscription processor, no credit-card relationship.</p>
+        <p>Learn more:
+          <a href="https://noklock.app/info">How it works</a> ·
+          <a href="https://noklock.app/pricing">Pricing</a> ·
+          <a href="https://noklock.app/prove-it">Prove It (try the real pipeline)</a> ·
+          <a href="https://noklock.app/manual">User manual (6 languages)</a> ·
+          <a href="https://noklock.app/heir">Heir guide</a> ·
+          <a href="https://noklock.app/privacy">Privacy</a> ·
+          <a href="https://noklock.app/terms">Terms</a> ·
+          <a href="https://noklock.app/updates">Updates</a>
+        </p>
+        <p>This application requires JavaScript to use. The summary above is for search engines, AI assistants, and accessibility tooling. Contact: hello@noklock.app</p>
+      </main>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,316 @@
+/* @version 0.4.0 @date 2026-05-27
+ *
+ * 0.4.0 — Print stylesheet for Manual + HeirGuide "Download PDF" buttons.
+ *         Hides all chrome (nav, footer, gates, screensavers, the print
+ *         button itself, banners) and flattens collapsibles + light-mode
+ *         text colours so a default browser "Save as PDF" produces a
+ *         clean, readable guide. Triggered by adding the .print-doc class
+ *         on the printable wrapper, plus the universal .no-print escape
+ *         hatch for anything else we want hidden from print.
+ *
+ * 0.3.2 — .hero-bg horizontal gradient slightly deepened (left 0.80→0.88,
+ *         middle 0.50→0.62, right 0.10→0.22). Daniel post-mainnet: padlock
+ *         image was a tick too prominent against the H1.
+ * 0.3.1 — .hero-bg overlay opacity reduced. Was 0.94 → 0.80 → 0.45 — Daniel
+ *         flagged that the v44m image was too dim, the padlock + binary
+ *         streams weren't visible enough. Tightened to 0.80 → 0.50 → 0.10
+ *         so the lock motif breathes on the right while keeping left-side
+ *         text contrast. Added a subtle vertical inner darken at the very
+ *         top + bottom so the hero blends smoothly with sections above/below.
+ * 0.3.0 — animated .grad (200% width + grad-flow 6s linear infinite) +
+ *         initial .hero-bg utility.
+ * 0.2.1 — comment-block fix.
+ * 0.2.0 — design-token spec.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Backgrounds */
+  --bg-deepest: #0f172a;
+  --bg-panel:   #162032;
+  --bg-surface: #1e293b;
+
+  /* Text */
+  --text-on-dark: #e2e8f0;
+  /* 2026-05-28 Daniel: bumped from slate-500 (#64748b, ~3.0:1 contrast on
+     bg-deepest, FAILS WCAG AA for body text) to slate-400 (#94a3b8,
+     ~4.9:1, PASSES AA). Real win in low-light / outdoor / overhead glare
+     conditions. Still visually distinct from --text-on-dark so the muted
+     hierarchy survives. */
+  --text-muted:   #94a3b8;
+  --text-primary: #0f172a;
+
+  /* Accents — gradient ramp */
+  --accent-cyan:  #7dd3fc;
+  --accent-teal:  #2dd4bf;
+  --accent-green: #10b981;
+
+  /* States */
+  --danger: #b91c1c;
+
+  /* Elevation + chrome */
+  --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.25);
+  --modal-scrim: rgba(15, 23, 42, 0.55);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg-deepest);
+    color: var(--text-on-dark);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 {
+    font-family: "Jura", "Inter", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  /* Form controls: guarantee readable typed text + a visible (but muted)
+     placeholder on every dark input/textarea/select. Without this, a control
+     with a custom dark bg (e.g. bg-deepest) inherits the UA placeholder grey,
+     which is too faint to read — the "invisible placeholder" Daniel hit on the
+     Citations inputs. Pages can still override with explicit text-* classes. */
+  input,
+  textarea,
+  select {
+    color: var(--text-on-dark);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+  /* Sensitive surfaces (seed-entry, restore display) get a distinct border
+     so the user can't confuse them with normal content. */
+  .sensitive-surface {
+    border: 2px solid color-mix(in srgb, var(--accent-teal) 40%, transparent);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: var(--bg-surface);
+  }
+}
+
+@layer components {
+  /* Rich-text prose (sealed-letter reveal, Updates, RichTextEditor surface).
+     Tailwind preflight strips heading/list styling, so restore it here. */
+  .prose-noklock h1 { font-size: 1.25rem; font-weight: 700; margin: 0.5rem 0; }
+  .prose-noklock h2 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0; }
+  .prose-noklock h3 { font-size: 1.05rem; font-weight: 700; margin: 0.4rem 0; }
+  .prose-noklock h4 { font-weight: 700; margin: 0.4rem 0; }
+  .prose-noklock p  { margin: 0.4rem 0; }
+  .prose-noklock ul { list-style: disc;    padding-left: 1.4rem; margin: 0.4rem 0; }
+  .prose-noklock ol { list-style: decimal; padding-left: 1.4rem; margin: 0.4rem 0; }
+  .prose-noklock li { margin: 0.15rem 0; }
+  .prose-noklock a  { color: var(--accent-cyan); text-decoration: underline; }
+  .prose-noklock strong, .prose-noklock b { font-weight: 700; }
+  .prose-noklock em, .prose-noklock i { font-style: italic; }
+  .prose-noklock u { text-decoration: underline; }
+  .prose-noklock blockquote { border-left: 3px solid var(--bg-surface); padding-left: 0.75rem; color: var(--text-muted); margin: 0.4rem 0; }
+  .prose-noklock hr { border-color: var(--bg-surface); margin: 0.6rem 0; }
+  .prose-noklock code, .prose-noklock pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  /* Articles media — responsive images + 16:9 video embeds. */
+  .prose-noklock img { max-width: 100%; height: auto; border-radius: 0.375rem; margin: 0.6rem 0; }
+  .prose-noklock iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; border-radius: 0.375rem; margin: 0.6rem 0; }
+  .prose-noklock figure { margin: 0.6rem 0; }
+  .prose-noklock figcaption { color: var(--text-muted); font-size: 0.85em; margin-top: 0.25rem; }
+  /* contentEditable placeholder (no native placeholder attr exists). */
+  .rte-editable:empty:before {
+    content: attr(data-placeholder);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  .btn-primary {
+    background: var(--accent-teal);
+    color: var(--text-primary);
+  }
+  .btn-primary:hover {
+    background: var(--accent-cyan);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: var(--bg-panel);
+    color: var(--text-on-dark);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-surface);
+  }
+  .btn-danger {
+    background: var(--danger);
+    color: #ffffff;
+  }
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--bg-surface);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+  }
+  .tier-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono uppercase tracking-wider;
+  }
+}
+
+@layer utilities {
+  /* Vault master-password masking WITHOUT type=password. Each vault has
+     its OWN password, so a browser-saved/autofilled credential is both
+     wrong AND a leak — we must stop Chrome/Edge offering to save,
+     generate or autofill it. The reliable way is to NOT use a password
+     input at all: a text input visually masked via -webkit-text-security
+     is not treated as a credential field by Chromium password managers.
+     Components feature-detect this and fall back to type=password only
+     on engines that lack the property (so it is never unmasked). */
+  .nk-secret { -webkit-text-security: disc; }
+  .nk-secret-shown { -webkit-text-security: none; }
+
+  /* USAGE: <h2><span class="grad">Heading</span></h2>
+     The gradient must live on a wrapped <span> inside the heading element —
+     applying it directly to h1/h2/h3 doesn't work because the heading's own
+     `color` rule wins over `-webkit-text-fill-color: transparent`. */
+  .grad {
+    /* Wider gradient (200% size) cycled via background-position keyframe.
+       Mirrors the tenza.one text-flow style. */
+    background: linear-gradient(
+      90deg,
+      var(--accent-cyan) 0%,
+      var(--accent-teal) 25%,
+      var(--accent-green) 50%,
+      var(--accent-teal) 75%,
+      var(--accent-cyan) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    /* Descender breathing room. Without these, inline-block clips the bottom
+       pixels of glyphs like y/g/p/j and the gradient-text bounding box hides
+       them. Vertical-align baseline keeps the gradient inline-block sitting
+       on the surrounding text baseline cleanly. */
+    line-height: 1.2;
+    padding: 0.05em 0.05em 0.15em 0.05em;
+    vertical-align: baseline;
+    animation: grad-flow 6s linear infinite;
+  }
+  @keyframes grad-flow {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grad { animation: none; background-position: 0% 50%; }
+  }
+  .grad-bg {
+    background: linear-gradient(
+      135deg,
+      var(--accent-cyan) 0%,
+      var(--accent-teal) 45%,
+      var(--accent-green) 100%
+    );
+  }
+  .scrim {
+    background: var(--modal-scrim);
+  }
+  /* Hero background — layered dark gradient over v44m.jpg (deep-blue padlock +
+     binary streams + circuit nodes). Left side stays dark enough for H1/
+     subtitle contrast; right side fades to 10% scrim so the padlock motif is
+     clearly visible. Vertical inner darken at top/bottom keeps the hero
+     blending into adjacent sections. */
+  .hero-bg {
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(15, 23, 42, 0.30) 0%,
+        rgba(15, 23, 42, 0.00) 12%,
+        rgba(15, 23, 42, 0.00) 88%,
+        rgba(15, 23, 42, 0.50) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(15, 23, 42, 0.88) 0%,
+        rgba(15, 23, 42, 0.62) 50%,
+        rgba(15, 23, 42, 0.22) 100%
+      ),
+      url("/hero-bg.jpg");
+    background-size: cover, cover, cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+}
+
+/* Print stylesheet — opt-in via .print-doc on the printable container.
+   Manual + HeirGuide use the browser's "Save as PDF" via window.print(). */
+@media print {
+  /* Hide non-content chrome universally */
+  nav, header[role="banner"], footer, .no-print { display: none !important; }
+  /* Light theme for paper */
+  html, body { background: #ffffff !important; color: #111111 !important; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  .print-doc {
+    background: #ffffff !important;
+    color: #111111 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .print-doc .card,
+  .print-doc section,
+  .print-doc header {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 0 14pt 0 !important;
+    page-break-inside: avoid;
+  }
+  .print-doc h1, .print-doc h2, .print-doc h3 {
+    color: #000000 !important;
+    page-break-after: avoid;
+  }
+  .print-doc .grad, .print-doc .grad-bg {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: #000000 !important;
+    color: #000000 !important;
+  }
+  .print-doc p, .print-doc li, .print-doc code, .print-doc a {
+    color: #111111 !important;
+  }
+  .print-doc code { background: #f3f4f6 !important; padding: 1px 3px; border-radius: 3px; }
+  .print-doc a { text-decoration: underline; }
+  /* Expand collapsibles so PDF readers see everything */
+  .print-doc details { display: block !important; }
+  .print-doc details > summary { list-style: none !important; cursor: default; }
+  .print-doc details > *:not(summary) { display: block !important; }
+  /* Anchor nav strip + jump-to becomes noise on paper */
+  .print-doc nav[aria-label="Contents"], .print-doc nav[aria-label="Jump to"] { display: none !important; }
+}
+
+/* NoKLockSpinner keyframes — global so the animation is guaranteed to be
+   resolved before the component first paints. (Previously the keyframes
+   were declared in an inline <style> inside the component, which racey on
+   first paint and visibly failed to spin for some users.) */
+@keyframes nkSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes nkPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.95); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+@keyframes nkGlow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.35)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.7)); }
+}

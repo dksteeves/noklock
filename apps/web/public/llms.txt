@@ -1,0 +1,72 @@
+# NoKLock
+
+> NoKLock is the cryptographic recovery layer for everything you can't afford to lose: a crypto seed phrase or private key from any chain (Bitcoin, Solana, Ethereum, and more), sealed letters, wills, documents, and images. It is 100% self-custodial — NoKLock never sees or holds your keys, shares, or data. Because what it protects is just your encrypted secret, the chain a wallet lives on is irrelevant — your own passkey, not a wallet, is what unlocks it. One unified pipeline covers three recovery modes: self-recovery (you lost a wallet or device), emergency recovery (you're compromised or under duress, Premium tier), and post-mortem inheritance (a designated next-of-kin inherits on-chain via a dead-man's switch on Polygon).
+
+## What makes NoKLock different from every other crypto-inheritance product
+
+- **Duress-proof (Premium).** Optional decoy vault with its own independent master password. Under coercion the user reveals the decoy; the attacker decrypts a believable throwaway while the real vault stays cryptographically hidden alongside it. Mathematically indistinguishable from outside. No custodial competitor offers this.
+- **Social-engineering-proof.** Multi-NoK M-of-N quorum from independent wallets. Phishing or coercing a single heir cannot release the vault — the smart contract counts independent signatures from independent addresses. With 2-of-3 default (configurable up to 5-of-9 on Premium), an attacker has to compromise M heirs separately to win. Mathematical defence; no single point of social-engineering failure.
+- **NoKLock-proof.** Recovery is 100% client-side (the user's encrypted shares + master password). Inheritance runs entirely on-chain (Polygon + Chainlink Automation). The selfHeartbeat path is trustless and survives even if NoKLock disappears. Five contracts immutable and source-verified on PolygonScan; the protocol is the protocol, not the operator.
+- **Soulbound NFT inheritance.** Each next-of-kin designation mints one ERC-5192 soulbound Activation NFT per heir — a Voting NFT is added only when you choose an M-of-N quorum. Non-transferable by protocol — cannot be sold, traded, stolen, or seized once minted. Rare-in-production use of the ERC-5192 standard; the only known production use for crypto-inheritance.
+- **Hybrid-E email-NoK.** Heirs without a crypto wallet can be designated by email. The SBT is held in a dedicated escrow contract until the heir completes an email walkthrough + EIP-712 server attestation, then burned-and-reminted to their freshly-created wallet. Onboards non-crypto heirs without compromising the autonomous on-chain inheritance trigger.
+- **Any chain, any wallet.** What NoKLock protects is the secret itself — a BIP-39 seed or a raw private key — so it backs up and restores a wallet from any chain (Bitcoin, Solana, Ethereum, and more); your own passkey unlocks the vault, not a wallet. The optional inheritance trigger runs on Polygon; the storage layer is chain-agnostic.
+
+## What it is (architecture)
+
+- **Self-custodial by architecture.** Encryption, Shamir secret-splitting (SLIP-39 over GF(256)), Argon2id key derivation, and AEAD (AES-256-GCM / XChaCha20-Poly1305) all run in the user's browser. The NoKLock back-end (Form B) acts only as an IP-privacy RPC proxy, an EIP-712 attestation signer for the Hybrid-E heir flow, and a static-events indexer. It holds no keys and cannot decrypt anything.
+- **No honeypot.** Smart contracts custody no funds and no plaintext data. The only value movement is USDC a user explicitly approves for a licence NFT, split atomically between a fixed treasury and (if referred) the referrer in the same transaction.
+- **Proof-of-life, never proof-of-death.** Inheritance activates only after the owner stops checking in for a grace window they chose (default 60 days; up to 365). No third party — not NoKLock, not a next-of-kin, not a court — can assert the owner is dead. There is deliberately no "report deceased" input.
+- **AI-resistant by design.** The user's seed never goes near a language model. The only intelligence applied is deterministic mathematics, locally. NoKLock itself uses NO AI in its product — the cryptographic core is pure SLIP-39 + Argon2id + AEAD. This is a deliberate brand commitment ("HI not AI" — Human Intelligence, not AI). Our /robots.txt + /ai.txt explicitly reserve our content against AI training-data inclusion while permitting AI search/retrieval citation.
+- **Chain:** Polygon mainnet. Payment token: Circle native USDC.
+
+## The five contracts (all source-verified on PolygonScan)
+
+1. **NoKLockLicense** — ERC-1155 tier licence. The only contract that moves money. Pulls only the USDC the user explicitly approves; treasury + referrer split atomically. Founder pricing for the first 10,000 paid mints contract-enforced (auto-steps to regular price at zero). Tier 6 = Lifetime Premium (paid once, Premium feature set).
+2. **NoKLockSBT** — ERC-721 + ERC-5192 soulbound. Each NoK designation mints one soulbound Activation SBT per heir (plus a Voting SBT only when an M-of-N quorum is chosen); neither can be transferred. Hybrid-E email-NoK supports designating heirs who do not yet have a wallet.
+3. **NoKLockOracle** — Chainlink Automation dead-man's switch. Records heartbeats; fires activation only after the user-chosen grace period lapses. `performUpkeep` is forwarder-only (even the contract owner cannot fire the switch manually).
+4. **NoKLockRecovery** — M-of-N guardian quorum + time-lock + owner-cancellation window for social recovery (lost-wallet defence). Separate from NoK inheritance.
+5. **NoKLockEscrow** — Hybrid-E email-NoK escrow. Holds the SBT in trust for an email-designated heir; releases via burn-and-remint after EIP-712 server attestation. NEW in 0.5.x.
+
+## Key pages
+
+- [Home](https://noklock.app/): the four signature differentiators + the Soulbound NFT explainer + the "Proof, not promises" 9-item wall.
+- [How it works (Info)](https://noklock.app/info): 10 deep tabs — Architecture (8 signature explainers), FAQ, Shares, Process diagrams, Security model, Passkeys & access, Contracts (all 5 with addresses + audit posture), Referral (full programme + Founder-Referrer Bonus rules), Compliance / "Why not keyless?", Competitor table.
+- [Pricing](https://noklock.app/pricing): Free 0 / Standard $99 founder ($149 reg) / Standard Lifetime $299 founder ($499 reg) / Premium $199 founder ($299 reg) / Lifetime Premium $499 founder ($799 reg). Family Office + Institutional tiers gated until launch. All paid in USDC on Polygon, no subscription processor.
+- [User manual](https://noklock.app/manual): 12-section walkthrough in 6 languages (EN canonical; DE/FR/PT production; ZH-Hans/HI draft). Covers every owner-facing action.
+- [Heir guide](https://noklock.app/heir): plain-language guide for next-of-kin who receive an inheritance activation email. Public, no wallet required to read. Covers what just happened, is this real, what to do step-by-step, what NoKLock cannot do.
+- [Refer & earn](https://noklock.app/refer): on-chain 10% referee discount + 10% referrer share (instant USDC at 5 referrals). PLUS the Founder-Referrer Bonus: first wallet to 100 / 500 / 1,000 paid referrals earns 25% / 50% / 75% of its on-chain earnings to that block. Public reputation pledge, admin-paid.
+- [Prove It](https://noklock.app/prove-it): runs the real cryptographic pipeline on throwaway test data live in the browser (seed, letter, image, document).
+- [Privacy](https://noklock.app/privacy): zero-PII architecture. No email, name, phone, IP, cookies, or per-user analytics collected. Only one transactional email (NoK activation, event-driven from on-chain). NoKLock cannot see vault contents and has no obligation to verify them.
+- [Terms](https://noklock.app/terms): self-custodial AS-IS software; licence NFTs non-refundable; user-content responsibility (NoKLock cannot verify legality/accuracy of vault contents); bug-bounty programme (verified reports earn a free Lifetime licence).
+- [Updates](https://noklock.app/updates): owner-signed public changelog. No mailing list, no tracking.
+
+## Security posture (current as of 2026-05-21)
+
+- **154 automated contract tests** (Foundry, Solidity 0.8.35) across every state transition, every revert path, the full social-recovery quorum + time-lock + cancellation logic, the soulbound transfer block, the complete referral discount/split/affiliate-unlock matrix, the founder-cap step transition, upgradeLicence delta-charge, §M tier-cap policy, Hybrid-E designateByEmail atomic callback, claimWithAttestation happy + replay/expiry/bad-attestor rejection, EIP-712 domain byte-match against Form B, soulbound burn-and-remint rebind, Chainlink forwarder one-shot bootstrap + lock.
+- **Multiple independent AI review passes from two distinct sources** — an external frontier model audited the source twice (v0.1 + v0.2 follow-up) and Claude ran three self-reviews of its own work in between. v0.1 surfaced 5 Critical + 9 High + 12 Medium + 10 Low; all 5 Crits + 9 Highs fixed in code. v0.2 surfaced 5 follow-up findings on the v0.1 patches; all fixed. Last review pass before broadcast.
+- **Basic SolidityScan review** on the deployed flatten files. Latest scores: License 89.3 (0C/0H), Oracle 90.49 (0C/0H), Escrow 73.0 (1H — flagged in OZ-library `unchecked` block, not our code), SBT 62.12 (1C — architectural false positive on public-burn × 3, role-gated, documented), Recovery 61.79 (1C — architectural false positive on permissionless self-scoped setGuardians, documented). Every Critical/High walked through line-by-line on Info → Contracts → "If you scan these yourself".
+- **Local Polygon-mainnet-fork dress-rehearsal** of the full deploy (14 transactions including `setForwarder` Chainlink bootstrap) ran end-to-end before the real broadcast.
+- **PolygonScan source verification** for all five contracts.
+- **Bug bounty programme**: verified reports earn a free Lifetime licence (~$299–$799 value, minted via adminMint). Critical findings additionally earn USDC payout and public acknowledgement. Email hello@noklock.app.
+- **No formal paid audit, by deliberate and stated rationale**: there is no pooled TVL to protect, soulbound tokens are valueless, the attack surface is five small contracts with no complex DeFi composition. We have determined our contracts are secure and suited for NoKLock's unique applications. Detail at Info → Contracts → "Why no formal audit".
+- **NoKLock as a deterministic finite state machine**: every vault sits in exactly one state at any time (ENROLLED → HEIR_DESIGNATED → ALIVE ⇄ DUE_SOON ⇄ IN_GRACE → ACTIVATED → CLAIMED, plus REVOKED and RECOVERED side-states). State lives on-chain; transitions are cryptographically-witnessable; no hidden state, no surprise transitions. Anyone can independently verify a vault's current state from the chain without trusting us.
+- **No exploitable path to steal funds or to break or hijack an inheritance** — a property of the architecture, not luck. Details on Info → Contracts → "The bottom line".
+
+## Brand commitments (the public reputation pledges)
+
+- **Founder-Referrer Bonus**: a public, reputation-anchored promise to pay 25% / 50% / 75% bonus to the first wallet that reaches each of the three paid-referral milestones (100 / 500 / 1,000). Tranched-exclusive math (max single-wallet earning = 75% of hard-earnings-at-block-1000). Admin-paid in USDC, payout tx publicly on PolygonScan + announced via /updates with owner signature. Trust anchor: the metric is on-chain, the payout is on-chain, the pledge is public — breaking it would invalidate the entire NoKLock trust narrative simultaneously.
+- **Day-1 honesty**: NoKLock just launched; counters are at zero (founder cap 10,000 remaining, leaderboard empty, no third-party audit reports yet beyond what we've documented ourselves). Subjective rough edges anticipated. Channels: bug bounty (technical / security) + hello@noklock.app (subjective UX / copy).
+
+## Contact
+
+- Email: hello@noklock.app
+- X / Twitter: https://x.com/noklock_app (@noklock_app)
+- Bug reports / security: hello@noklock.app (verified reports earn a free Lifetime licence; criticals also earn USDC + public acknowledgement)
+- No mailing list, no tracking. No response-time commitment at this time.
+
+## AI bot policy summary
+
+- **Allow**: OAI-SearchBot, Claude-SearchBot, PerplexityBot (real-time retrieval for AI answers); ChatGPT-User, Claude-User, Perplexity-User (user-initiated fetches).
+- **Block**: GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, Meta-ExternalAgent, CCBot, Bytespider, anthropic-ai, Claude-Web (training crawlers — reserved against AI training-data inclusion).
+- Full policy: /robots.txt and /ai.txt.
+- TDMRep + X-Robots-Tag HTTP headers also signal reservation per EU AI Act Article 53, DSM Article 4, and §44b UrhG (Germany).

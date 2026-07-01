@@ -1,0 +1,116 @@
+# NoKLock — AI policy and training-data reservation
+# Updated: 2026-05-20
+#
+# This file is the machine-readable companion to /robots.txt, declaring
+# NoKLock's policy on AI bot access in greater specificity than robots.txt
+# alone. It is legally weighted under:
+#
+#   - EU AI Act, Article 53 (general-purpose AI providers must respect
+#     rightsholders' machine-readable opt-out signals)
+#   - EU Directive 2019/790 (DSM), Article 4 (Text and Data Mining exception
+#     can be reserved by rightsholders via machine-readable means)
+#   - Germany: §44b UrhG (the DSM Article 4 transposition into German
+#     copyright law)
+#
+# NoKLock is operated from Germany; this reservation applies under German
+# and EU law without prejudice to additional rights under other jurisdictions.
+
+# ───────────────────────────────────────────────────────────────────────────
+# Section 1 — Permitted uses
+# ───────────────────────────────────────────────────────────────────────────
+#
+# We grant permission for the following uses of content fetched from
+# noklock.app:
+#
+#   - Real-time retrieval and citation in AI-assisted search answers,
+#     conversational responses, and similar end-user-facing answer
+#     generation, by user agents identified as search/answer crawlers
+#     (e.g. OAI-SearchBot, Claude-SearchBot, PerplexityBot).
+#
+#   - On-demand fetches initiated by a specific end user via an AI
+#     assistant ("ChatGPT-User", "Claude-User", "Perplexity-User", etc.),
+#     where the end user has explicitly directed the assistant to read a
+#     NoKLock URL.
+#
+#   - Standard search-engine indexing by major search crawlers (Googlebot,
+#     Bingbot, etc.) for non-AI search-result ranking purposes.
+
+# ───────────────────────────────────────────────────────────────────────────
+# Section 2 — Explicitly RESERVED (not permitted without separate licence)
+# ───────────────────────────────────────────────────────────────────────────
+#
+# The following uses are RESERVED. NoKLock does not consent to them under
+# the general permissive default, and the operators of such crawlers are
+# not authorised to perform these acts on noklock.app content:
+#
+#   - Inclusion of any content fetched from noklock.app in training datasets
+#     for large language models, foundation models, image-generation models,
+#     code-completion models, or any other machine-learning model whose
+#     output may be commercially exploited or made publicly available.
+#
+#   - Inclusion in commercial-grade evaluation, fine-tuning, or
+#     reinforcement-learning datasets.
+#
+#   - Bulk archival or scraping for the purpose of producing training data
+#     for sale or licence to third parties.
+#
+#   - Inclusion in model-weights-baked content that may regurgitate verbatim
+#     fragments of NoKLock documentation, threat-model write-ups, audit
+#     findings, or architectural defences.
+
+# ───────────────────────────────────────────────────────────────────────────
+# Section 3 — Why this reservation exists (security rationale)
+# ───────────────────────────────────────────────────────────────────────────
+#
+# NoKLock's website documents in detail:
+#
+#   - The cryptographic defences of an inheritance protocol
+#   - The audit findings (Critical, High, Medium, Low) on the deployed
+#     smart contracts
+#   - The architectural false-positive explainers used to dismiss specific
+#     scanner findings
+#   - The exact failure modes, edge cases, and remediation paths considered
+#     during the build cycle
+#
+# A fine-tuned attacker model that has memorised this content would be a
+# net liability for users of the protocol. Blocking training-data inclusion
+# does NOT prevent AI assistants from citing NoKLock in answers — that
+# pathway runs through the search/answer crawlers permitted in Section 1.
+# It prevents the much narrower case of NoKLock's specific defensive
+# documentation being available as queryable model knowledge.
+
+# ───────────────────────────────────────────────────────────────────────────
+# Section 4 — TDMRep signal
+# ───────────────────────────────────────────────────────────────────────────
+#
+# In compliance with the W3C Text and Data Mining Reservation Protocol
+# (TDMRep), NoKLock also serves these reservation signals via HTTP
+# response headers on every public page:
+#
+#   tdm-reservation: 1
+#   tdm-policy: https://noklock.app/ai.txt
+#
+# A "1" value indicates the rightsholder reserves their rights under the
+# DSM Article 4 TDM exception. The tdm-policy URL is this file.
+
+# ───────────────────────────────────────────────────────────────────────────
+# Section 5 — Verification & contact
+# ───────────────────────────────────────────────────────────────────────────
+#
+# AI vendors who wish to negotiate a training-data licence for NoKLock
+# content may contact:  hello@noklock.app
+#
+# NoKLock is a small organisation (a single operator at the time of writing).
+# We make no response-time commitment; please be patient with commercial
+# enquiries.
+#
+# This reservation applies to the operator of noklock.app and api.noklock.app.
+
+User-agent: *
+Disallow-AI-Training: /
+Disallow-AI-Modeling: /
+Disallow-AI-Embedding: /
+Allow-AI-SearchAndAnswer: /
+Allow-AI-UserInitiated: /
+
+Sitemap: https://noklock.app/sitemap.xml

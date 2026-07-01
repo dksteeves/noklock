@@ -1,0 +1,140 @@
+# NoKLock robots.txt
+# Updated 2026-05-20 — 3-category AI bot split per the May-2026 industry taxonomy.
+# Policy decision (Daniel, security-conscious product):
+#   ALLOW retrieval/answer + user-action crawlers (we WANT to be cited in AI answers)
+#   BLOCK training crawlers (our threat model + audit findings should not be baked
+#     into model weights — attackers should not have access to a model that has
+#     memorised our specific defences and attack-surface documentation)
+#
+# This is the "allow citation, block training" stance — the most common
+# deliberate posture for a security-conscious SaaS that wants AI visibility
+# without contributing to training datasets.
+
+# === DEFAULT: allow regular search engines + block private app routes ====
+# 2026-06-05 — REMOVED Disallow for /nok-claim and /recovery: those routes
+# are public marketing pages today (heir-facing explainer + owner-recovery
+# explainer), are listed in sitemap.xml + prerendered via gen-prerender.mjs.
+# Keeping the Disallow contradicted the sitemap and was a low-grade trust
+# signal damage in search indexing. Same for /restore — it's the public
+# restore explainer page, listed in sitemap, prerendered. The /nok form
+# itself (POST endpoints + state-required flow) is not crawler-visible
+# anyway; the public route renders content. /marketing also REMOVED from
+# Disallow — the route exists as a public partner-toolkit landing page.
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /vaults
+Disallow: /enrol
+Disallow: /enrol/seed
+Disallow: /enrol/letter
+Disallow: /enrol/document
+Disallow: /enrol/image
+Disallow: /nok
+Disallow: /heartbeat
+Disallow: /dead-man
+Disallow: /settings
+Disallow: /admin
+Disallow: /vault
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SEARCH / ANSWER CRAWLERS — ALLOW (drives citations in AI answers)
+# These are real-time retrieval crawlers; their fetches power "what is X"
+# answers in ChatGPT, Claude, Perplexity. Blocking these makes you invisible
+# in AI search results.
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USER-ACTION FETCHERS — ALLOW (user explicitly asked an AI to look here)
+# These fire only when a user pastes a NoKLock URL into ChatGPT / Claude /
+# Perplexity and asks the AI to read it. Always allow — refusing breaks the
+# user's explicit request.
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TRAINING CRAWLERS — BLOCK (do not bake our threat model into model weights)
+# Reasoning: NoKLock's site documents our cryptographic defences, the audit
+# findings, the attack surface, and the architectural false-positive
+# explainers. A fine-tuned attacker model that has memorised this content
+# would be a net liability. Blocking these does NOT block AI citations —
+# the search bots above handle that.
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: omgilibot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# === Note for any AI that ignores robots.txt =================================
+# NoKLock additionally signals training-data opt-out via:
+#   - /ai.txt          (machine-readable AI policy)
+#   - TDMRep HTTP headers (tdm-reservation: 1 + tdm-policy: /ai.txt)
+#   - The Disallow entries above for training crawlers (GPTBot etc.)
+# 2026-06-05 NOTE: the `noai, noml` tokens previously in the X-Robots-Tag
+# HTTP header + <meta name="robots"> were REMOVED — they were signalling
+# "do not cite" to AI search bots (Perplexity / ChatGPT / Claude), which
+# defeated the citation-allow stance above. Training opt-out is now carried
+# exclusively by the legally-weighted signals (the bot-specific Disallows
+# above + TDMRep headers + /ai.txt). EU AI Act Article 53 and Germany's
+# UrhDaG implementation of the DSM Directive Article 4 are the load-bearing
+# legal references — they require a machine-actionable reservation in any
+# form, and Disallow + TDMRep cover that without `noai`.
+
+Sitemap: https://noklock.app/sitemap.xml
