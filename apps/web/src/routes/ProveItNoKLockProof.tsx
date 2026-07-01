@@ -4,7 +4,7 @@
 // your inheritance still fires and your seed still restores.
 //
 // Three concrete demonstrations on this page:
-//   1. The 5 contract addresses on PolygonScan, source-verified.
+//   1. The 6 contract addresses on PolygonScan, source-verified.
 //   2. The Chainlink Automation registry — we don't run the keeper;
 //      Chainlink's decentralized network does. Link to our upkeep so the
 //      user can confirm LINK funding live.

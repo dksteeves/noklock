@@ -313,7 +313,7 @@ const EN: Doc = {
       route: "/settings",
       steps: [
         { screen: "Settings", what: "/settings — defaults (threshold / total shares / grace period), language, and account help." },
-        { screen: "Info", what: "/info — architecture, the share model, security, passkeys, contracts (with the live audit posture for all 5), and the \"Why not keyless?\" explainer." },
+        { screen: "Info", what: "/info — architecture, the share model, security, passkeys, contracts (with the live audit posture for all 6), and the \"Why not keyless?\" explainer." },
         { screen: "Help", what: "/help — practical FAQ and troubleshooting." },
         { screen: "Updates", what: "/updates — owner-signed roll-by-roll change history. Every release we describe what shipped." },
       ],

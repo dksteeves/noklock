@@ -19,7 +19,7 @@
 
 - App: <https://noklock.app>
 - How it works (plain answers): <https://noklock.app/crypto-inheritance>
-- Architecture, security & all 5 contracts (source-verified): <https://noklock.app/info?tab=contracts>
+- Architecture, security & all 6 contracts (source-verified): <https://noklock.app/info?tab=contracts>
 - Honest comparisons (vs Casa, Vault12, Inheriti, Deadhand): <https://noklock.app/compare>
 - Run the real cryptographic pipeline on throwaway data: <https://noklock.app/prove-it>
 - **Build it yourself** from this source (clone → build → confirm it's exactly this source): [`REPRODUCE.md`](REPRODUCE.md)
@@ -34,12 +34,13 @@
 | NoKLockOracle (Chainlink dead-man's switch) | `0xF68c65d389724b92F05D1Fe506995b3591Ef458A` |
 | NoKLockRecovery (M-of-N guardians · timelock) | `0x81755b80Dc2bcC1F1543671FBDFDf4D76Bc8e5bE` |
 | NoKLockEscrow (Hybrid-E email-NoK · EIP-712) | `0xe56F0cC151FD8520B040c3842310Ee865e65D27c` |
+| NoKLockAlerts (Live-Man's Switch · Chainlink log-trigger recovery alerts · no funds/keys) | `0xA19fCc4b1BBde55BB761063a20266dbcAb181C86` |
 
 ## Assurance
 
 - 154 automated contract tests on Solidity 0.8.35, covering every state transition and revert path.
 - The code and contracts have been reviewed and audited across multiple independent AI models (of course) — plus a full deploy dress-rehearsal on a local Polygon mainnet fork before broadcast.
-- All five contracts source-verified on PolygonScan; deterministic finite-state-machine design with cryptographically-witnessable on-chain state.
+- All six contracts source-verified on PolygonScan; deterministic finite-state-machine design with cryptographically-witnessable on-chain state.
 - Open bug-bounty programme: verified reports earn a free Lifetime licence; criticals also earn USDC. See <https://noklock.app/info?tab=contracts#bug-bounty>.
 
 ## Pricing

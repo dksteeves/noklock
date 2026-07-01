@@ -43,16 +43,17 @@ const ROUTES = [
   {
     path: "/info",
     title: "NoKLock — how it works: architecture, contracts, audits, FAQ",
-    description: "Five source-verified contracts on Polygon. 154 forge tests on Solidity 0.8.35. Two-pass independent audit. Architecture explainers for the four signature differentiators: Duress-proof, Social-engineering-proof, NoKLock-proof, Self-custodial.",
+    description: "Six source-verified contracts on Polygon. 154 forge tests on Solidity 0.8.35. Two-pass independent audit. Architecture explainers for the four signature differentiators: Duress-proof, Social-engineering-proof, NoKLock-proof, Self-custodial.",
     noscript: `
       <h1>How NoKLock works — architecture, contracts, audit posture</h1>
-      <p>NoKLock is a self-custodial cryptographic vault for crypto seed phrases, sealed letters, documents, and images, with on-chain next-of-kin inheritance via a dead-man's switch on Polygon. The entire system runs on five source-verified smart contracts:</p>
+      <p>NoKLock is a self-custodial cryptographic vault for crypto seed phrases, sealed letters, documents, and images, with on-chain next-of-kin inheritance via a dead-man's switch on Polygon. The entire system runs on six source-verified smart contracts:</p>
       <ol>
         <li><strong>NoKLockLicense</strong> — ERC-1155 tier licence. The only contract that moves money. Pulls only the USDC the user explicitly approves; treasury + referrer split atomically. Founder pricing for the first 10,000 paid mints contract-enforced.</li>
         <li><strong>NoKLockSBT</strong> — ERC-721 + ERC-5192 soulbound NFTs. Each next-of-kin designation mints one Activation NFT (M-of-N quorum vaults add a Voting NFT per heir) that cannot be transferred, sold, stolen, or seized. Rare-in-production use of the ERC-5192 standard.</li>
         <li><strong>NoKLockOracle</strong> — Chainlink Automation dead-man's switch. Records heartbeats; fires activation only after the user-chosen grace period lapses. <code>performUpkeep</code> is forwarder-only.</li>
         <li><strong>NoKLockRecovery</strong> — M-of-N guardian quorum + time-lock + owner-cancellation window for lost-wallet defence.</li>
         <li><strong>NoKLockEscrow</strong> — Hybrid-E email-NoK. Holds the SBT in trust for an email-designated heir until they complete an EIP-712 server-attested claim, then burns and re-mints to the heir's wallet.</li>
+        <li><strong>NoKLockAlerts</strong> — the Live-Man's Switch. A Chainlink log-trigger watches the Recovery contract and pings your pre-registered watcher wallets on-chain (self-funded POL, no NoKLock balance) when a recovery starts against you, so you can cancel within the timelock even if you never open the app.</li>
       </ol>
       <h2>The four signature differentiators</h2>
       <ul>
@@ -62,7 +63,7 @@ const ROUTES = [
         <li><strong>Self-custodial</strong> — NoKLock never sees seeds, shares, master passwords, or vault contents.</li>
       </ul>
       <h2>Audit posture</h2>
-      <p>154 automated contract tests on Solidity 0.8.35. Two-pass independent AI audit (round 1: 5 Critical + 9 High + 12 Medium + 10 Low — all 5 Crits + 9 Highs fixed; round 2: 5 follow-up findings on round-1 patches — all fixed). Basic SolidityScan review: License 89.3 / Oracle 90.49 / Escrow 73.0 / SBT 62.12 / Recovery 61.79 (every Critical/High walked through line-by-line). PolygonScan source-verified for all five contracts. Bug bounty programme live (verified reports earn a free Lifetime licence; criticals also earn USDC).</p>
+      <p>154 automated contract tests on Solidity 0.8.35. Two-pass independent AI audit (round 1: 5 Critical + 9 High + 12 Medium + 10 Low — all 5 Crits + 9 Highs fixed; round 2: 5 follow-up findings on round-1 patches — all fixed). Basic SolidityScan review: License 89.3 / Oracle 90.49 / Escrow 73.0 / SBT 62.12 / Recovery 61.79 (every Critical/High walked through line-by-line). PolygonScan source-verified for all six contracts. Bug bounty programme live (verified reports earn a free Lifetime licence; criticals also earn USDC).</p>
       <p>Open the full Info page in a JavaScript-capable browser to see the deep tabs (Architecture, FAQ, Shares, Process diagrams, Security, Passkeys, Contracts, Referral, Compliance, Competitors).</p>
     `,
   },
@@ -253,7 +254,7 @@ const ROUTES = [
       <h2>Can my heir inherit if they don't use crypto?</h2>
       <p>Yes. NoKLock's Hybrid-E lets you designate an heir by email; the inheritance NFT waits in escrow until the switch fires, then the heir makes a wallet and a server EIP-712 attestation rebinds the soulbound NFT to them.</p>
       <h2>What if NoKLock disappears?</h2>
-      <p>Recovery is 100% client-side from your shares; inheritance runs on Polygon + Chainlink, not our servers. No NoKLock, your heirs still inherit. Five contracts source-verified on PolygonScan, 154 automated tests, multiple independent reviews.</p>
+      <p>Recovery is 100% client-side from your shares; inheritance runs on Polygon + Chainlink, not our servers. No NoKLock, your heirs still inherit. Six contracts source-verified on PolygonScan, 154 automated tests, multiple independent reviews.</p>
       <p>Compare NoKLock with Casa, Vault12, Inheriti and Deadhand at /compare. Try the real cryptographic pipeline on throwaway data at /prove-it.</p>
     `,
   },
@@ -377,11 +378,11 @@ const ROUTES = [
   },
   {
     path: "/prove-it/noklock-proof",
-    title: "NoKLock — prove the chain runs without us: 5 immutable contracts + Chainlink keeper",
-    description: "If NoKLock vanished tomorrow, your inheritance still fires. 5 source-verified contracts on Polygon, Chainlink Automation as the dead-man's switch, public-RPC fallback chain. Honest caveats included.",
+    title: "NoKLock — prove the chain runs without us: 6 immutable contracts + Chainlink keeper",
+    description: "If NoKLock vanished tomorrow, your inheritance still fires. 6 source-verified contracts on Polygon, Chainlink Automation as the dead-man's switch, public-RPC fallback chain. Honest caveats included.",
     noscript: `
       <h1>Prove the chain runs without us — survives the vendor</h1>
-      <p>NoKLock's inheritance mechanism is five immutable Solidity contracts source-verified on PolygonScan. The dead-man's switch is fired by Chainlink Automation (a decentralised keeper), not by NoKLock. The PWA can reach the chain via the NoKLock RPC proxy or four public Polygon RPC endpoints in fallback order — if our proxy goes dark, your wallet still finds the chain.</p>
+      <p>NoKLock's on-chain contract suite is six immutable Solidity contracts source-verified on PolygonScan. The dead-man's switch is fired by Chainlink Automation (a decentralised keeper), not by NoKLock. The PWA can reach the chain via the NoKLock RPC proxy or four public Polygon RPC endpoints in fallback order — if our proxy goes dark, your wallet still finds the chain.</p>
       <p>Open in a JavaScript-capable browser to run the live checks and view the contract list with PolygonScan links.</p>
     `,
   },

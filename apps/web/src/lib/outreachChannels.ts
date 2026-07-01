@@ -637,7 +637,7 @@ export const LINKEDIN_DMS: readonly ChannelTemplate[] = [
     id: "li-fintech",
     angle: "Fintech / crypto professional",
     body:
-      "Hi {name} — given your background in {field}, I thought this might interest you. NoKLock is self-custodial crypto inheritance: an on-chain dead-man's switch (Chainlink Automation on Polygon) hands a vault to designated heirs, with soulbound-NFT records and an email path for non-crypto family. Five source-verified contracts; the protocol keeps working even if the company doesn't. I'd welcome your read on the model. noklock.app/info?tab=contracts",
+      "Hi {name} — given your background in {field}, I thought this might interest you. NoKLock is self-custodial crypto inheritance: an on-chain dead-man's switch (Chainlink Automation on Polygon) hands a vault to designated heirs, with soulbound-NFT records and an email path for non-crypto family. Six source-verified contracts; the protocol keeps working even if the company doesn't. I'd welcome your read on the model. noklock.app/info?tab=contracts",
     note: "Replace {name} and {field}. Slightly more technical than the estate version.",
   },
   {
