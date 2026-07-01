@@ -1,3 +1,7 @@
+// @version 0.3.0 @date 2026-07-01
+// 0.3.0 — Swap quotes now proxied through Form B (GET /v1/swap/quote) so the
+//         rate-limited 0x API key lives server-side and NEVER ships in this
+//         bundle. Gated by VITE_SWAP_ENABLED (was: presence of a client 0x key).
 // @version 0.2.0 @date 2026-05-19
 // 0.2.0 — + POLYGON_PAY_TOKENS curated list (canonical, liquid, public
 //         addresses) so TierCard can offer a dropdown instead of a
@@ -23,7 +27,10 @@
 import type { Address } from "viem";
 import { USDC_ADDR } from "./contracts.js";
 
-const ZEROX_BASE = "https://api.0x.org";
+// Form B proxy endpoint. VITE_API_BASE_URL already includes /v1, so this
+// resolves to https://api.noklock.app/v1/swap/quote. The 0x key is added
+// server-side by Form B's routes/swap.ts — it is never present in this bundle.
+const SWAP_PROXY = `${(import.meta.env.VITE_API_BASE_URL as string | undefined) ?? ""}/swap/quote`;
 const POLYGON_CHAIN_ID = 137;
 // 0x's sentinel for a chain's native asset (here: native POL/MATIC).
 export const NATIVE_SENTINEL = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" as Address;
@@ -50,10 +57,14 @@ export const POLYGON_PAY_TOKENS: readonly PayToken[] = [
   { symbol: "UNI",    name: "Uniswap",                     address: "0xb33EaAd8d922B1083446DC23f610c2567fB5180f" as Address },
 ];
 
-const API_KEY = (import.meta.env.VITE_ZEROX_API_KEY as string | undefined) ?? "";
+// Swap-to-pay is gated by a build flag (the client no longer holds the key —
+// Form B does). false/unset => the UI never offers swap-to-pay and the
+// direct-USDC flow is untouched. When true but the server's 0x key is unset,
+// a quote 503s and the UI falls back to direct USDC (graceful).
+const SWAP_ENABLED = (import.meta.env.VITE_SWAP_ENABLED as string | undefined) === "true";
 
 export function isSwapConfigured(): boolean {
-  return API_KEY.trim().length > 0;
+  return SWAP_ENABLED;
 }
 
 export interface SwapQuote {
@@ -91,7 +102,7 @@ export async function quoteToUsdc(params: {
   readonly usdcOut: bigint;
   readonly taker: Address;
 }): Promise<SwapQuote> {
-  if (!isSwapConfigured()) throw new Error("Swap-to-pay isn't configured (no 0x API key).");
+  if (!isSwapConfigured()) throw new Error("Swap-to-pay isn't enabled.");
 
   const qs = new URLSearchParams({
     chainId: String(POLYGON_CHAIN_ID),
@@ -103,8 +114,10 @@ export async function quoteToUsdc(params: {
 
   let res: Response;
   try {
-    res = await fetch(`${ZEROX_BASE}/swap/allowance-holder/quote?${qs.toString()}`, {
-      headers: { "0x-api-key": API_KEY, "0x-version": "v2" },
+    // The Form B proxy forwards to 0x with the server-held key + 0x-version
+    // header, and returns 0x's JSON (success or structured error) verbatim.
+    res = await fetch(`${SWAP_PROXY}?${qs.toString()}`, {
+      headers: { "Accept": "application/json" },
     });
   } catch {
     throw new Error("Couldn't reach the swap service. Pay with USDC directly instead.");
