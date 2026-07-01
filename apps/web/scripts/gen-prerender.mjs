@@ -63,7 +63,7 @@ const ROUTES = [
         <li><strong>Self-custodial</strong> — NoKLock never sees seeds, shares, master passwords, or vault contents.</li>
       </ul>
       <h2>Audit posture</h2>
-      <p>154 automated contract tests on Solidity 0.8.35. Two-pass independent AI audit (round 1: 5 Critical + 9 High + 12 Medium + 10 Low — all 5 Crits + 9 Highs fixed; round 2: 5 follow-up findings on round-1 patches — all fixed). Basic SolidityScan review: License 89.3 / Oracle 90.49 / Escrow 73.0 / SBT 62.12 / Recovery 61.79 (every Critical/High walked through line-by-line). PolygonScan source-verified for all six contracts. Bug bounty programme live (verified reports earn a free Lifetime licence; criticals also earn USDC).</p>
+      <p>154 automated contract tests on Solidity 0.8.35. Two-pass independent AI audit (round 1: 5 Critical + 9 High + 12 Medium + 10 Low — all 5 Crits + 9 Highs fixed; round 2: 5 follow-up findings on round-1 patches — all fixed). Basic SolidityScan review: License 89.3 / Oracle 90.49 / Escrow 73.0 / SBT 62.12 / Recovery 61.79 / Alerts 61.68 (every Critical/High walked through line-by-line). PolygonScan source-verified for all six contracts. Bug bounty programme live (verified reports earn a free Lifetime licence; criticals also earn USDC).</p>
       <p>Open the full Info page in a JavaScript-capable browser to see the deep tabs (Architecture, FAQ, Shares, Process diagrams, Security, Passkeys, Contracts, Referral, Compliance, Competitors).</p>
     `,
   },
